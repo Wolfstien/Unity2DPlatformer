@@ -65,6 +65,18 @@ public class LevelManager : MonoBehaviour
         //TODO: Think of a way to add checkpoint logic from here, for now leaving it at a single spawn point
     }
 
+    void EnsurePlayerSpawned()
+    {
+        if (GameManager.instance.PlayerRef!= null)
+        {
+            GameManager.instance.PlayerRef.transform.position = CurrentSpawnPoint;
+        }
+        else
+        {
+            RespawnAtCheckpoint();
+        }
+    }
+
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
@@ -72,10 +84,9 @@ public class LevelManager : MonoBehaviour
         {
             GameManager.instance.ResetData();
             UIManager.instance.LoadInGamePanel();
-            GameManager.instance.PlayerRef = GameObject.FindGameObjectWithTag("Player");
             CurrentLevel = scene.name;
             GetLevelData();
-            GameManager.instance.PlayerRef.transform.position = CurrentSpawnPoint;
+            EnsurePlayerSpawned();
 
             string BGM = Random.Range(0.0f, 1.0f) > 0.5f ? "BGM1":"BGM2";
             AudioManager.instance.PlayBgm(BGM);
