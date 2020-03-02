@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
     Animator myAnimator;
     // CapsuleCollider2D myCollider2D;
     BoxCollider2D myCollider2D;
+    CapsuleCollider2D capsuleCollider2D;
     float gravityScaleAtStart;
     
 
@@ -32,7 +33,8 @@ public class Player : MonoBehaviour {
         // TIP - Changed to box collider for better ground detection and takeoff... layer mask was only checking capsule when the box is a more accurate check
         // myCollider2D = GetComponent<CapsuleCollider2D>();
         myCollider2D = GetComponent<BoxCollider2D>();
-        
+        capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+
         gravityScaleAtStart = myRigidBody2D.gravityScale;
        
     }
@@ -170,7 +172,7 @@ public class Player : MonoBehaviour {
 
     private void Die()
     {
-        if (myCollider2D.IsTouchingLayers(LayerMask.GetMask("Enemy","Hazards")))
+        if (myCollider2D.IsTouchingLayers(LayerMask.GetMask("Enemy","Hazards","Traps")) || capsuleCollider2D.IsTouchingLayers(LayerMask.GetMask("Enemy","Hazards","Traps")))
         {
             myAnimator.SetTrigger("Die");
             GetComponent<Rigidbody2D>().velocity = deathKick;

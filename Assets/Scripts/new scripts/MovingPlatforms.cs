@@ -22,6 +22,13 @@ public class MovingPlatforms : MonoBehaviour
         heightRadius = Dimensions.y/2f;
     }
 
+    private void Start() {
+        if (GridRef == null)
+        {
+            GridRef = GameObject.Find("AStar").GetComponent<Grid_nn>();
+        }
+    }
+
     private void FixedUpdate() {
         UpdateTiles();
     }

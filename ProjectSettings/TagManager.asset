@@ -23,7 +23,7 @@ TagManager:
   - Hazards
   - Interactables
   - Projectiles
-  - 
+  - Traps
   - 
   - 
   - 
@@ -48,6 +48,9 @@ TagManager:
     locked: 0
   - name: Ladder
     uniqueID: 3022683519
+    locked: 0
+  - name: Traps
+    uniqueID: 2070721523
     locked: 0
   - name: Hazards
     uniqueID: 54210785

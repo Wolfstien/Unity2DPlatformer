@@ -8,15 +8,41 @@ public class Bullet : MonoBehaviour
     Rigidbody2D rigidBody2D;
     BoxCollider2D coll2D;
 
+    [SerializeField]
+    bool TrapExitedGround;
+
     private void Start() {
+
         rigidBody2D = GetComponent<Rigidbody2D>();
         coll2D = GetComponent<BoxCollider2D>();
+
         rigidBody2D.velocity = transform.right * speed;
+
+        TrapExitedGround = false;
     }
 
+    private void OnTriggerExit2D(Collider2D other) {
+        Debug.Log(other.gameObject.layer);
+        if (gameObject.layer == 16 && !TrapExitedGround)
+        {
+            TrapExitedGround = true;
+        }
+    }
+
+    // TODO! - change all Destroy(gameObject) to a poolable logic for performance optimization, Instantiate and destorying is usually bad
     void OnTriggerEnter2D(Collider2D other) {
+    
+        if (gameObject.layer == 16) //traps
+        {
+            if (TrapExitedGround && !other.tag.Equals("Player")) // if previously exited ground, destory on colliding with wall/ceiling..
+            {
+                Destroy(gameObject);
+            }
+            return; // return if traps and not bullets
+        }
         
-        if (other.gameObject.layer == 12) //enemy layer
+
+        if (other.gameObject.layer == 12) //enemy 
         {
             Debug.Log("hit enemy");
             GameManager.instance.AddScore(1);

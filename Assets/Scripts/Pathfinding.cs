@@ -5,31 +5,45 @@ using System;
 
 public class Pathfinding : MonoBehaviour{
 
-    public Transform seeker, target;
-    Grid_nn grid;
+    Transform seeker, target;
+    public Grid_nn grid;
     bool onlyonce = true;
-    public GameObject seekerObject;
+    GameObject seekerObject;
     public float speed = 10f;
     
 
     void Awake()
     {
-        grid = GetComponent<Grid_nn>();
+        // grid = GetComponent<Grid_nn>();
     }
 
-    // private void Start() {
-    //     Debug.DrawLine(Tile);
-    // }
+    private void Start() {
+        seekerObject = gameObject;
+        seeker = gameObject.transform;
+        if (grid == null)
+        {
+            grid = GameObject.Find("AStar").GetComponent<Grid_nn>();
+        }
+    }
 
-    void Update()
+    void FixedUpdate()
     {
-        FindPath(seeker.position, target.position);
+        if (target == null)
+        {
+            target = GameManager.instance.PlayerRef.transform;
+        }
+        FindPath(seeker.position, target.position); 
     }
 
     void FindPath(Vector3 startPos, Vector3 targetPos)
     {
         Node_nn startNode = grid.NodeFromWorldPoint(startPos);
         Node_nn targetNode = grid.NodeFromWorldPoint(targetPos);
+
+        if (startNode == targetNode)
+        {
+            return;
+        }
 
         List<Node_nn> openSet = new List<Node_nn>();
         HashSet<Node_nn> closedSet = new HashSet<Node_nn>();
@@ -87,7 +101,9 @@ public class Pathfinding : MonoBehaviour{
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
-        Vector3[] waypoints = SimplifyPath(path);
+        // Vector3[] waypoints = SimplifyPath(path);
+        Vector3[] waypoints = GetLastNodeToFollow(path); // easier and more accurate way
+        
         Array.Reverse(waypoints);
 
         grid.path = path;
@@ -107,15 +123,24 @@ public class Pathfinding : MonoBehaviour{
             onlyonce = false;
         }
         
-        if (waypoints.Length <=0)
+        if (waypoints.Length > 0)
         {
-            return;
-        }
-        //only target now is to move from one waypoint to another with a speed
-        seekerObject.transform.position = Vector3.MoveTowards(seekerObject.transform.position, waypoints[0],speed*Time.deltaTime);
+            seekerObject.transform.position = Vector3.MoveTowards(seekerObject.transform.position, waypoints[0], speed*Time.deltaTime);
+            float dir = seekerObject.transform.position.x - waypoints[0].x;
 
+            if (dir < 0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+            else
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+        }
+        
     }
 
+    // a bit buggy and seeker can get stuck in stuff
     Vector3[] SimplifyPath(List<Node_nn> path)
     {
         List<Vector3> waypoints = new List<Vector3>();
@@ -131,8 +156,13 @@ public class Pathfinding : MonoBehaviour{
             directionOld = directionNew;
         }
         return waypoints.ToArray();
-
-
+    }
+    // easier method, returns only the start node so the seeker can move towards starting node in the path always
+    Vector3[] GetLastNodeToFollow(List<Node_nn> path)
+    {
+        List<Vector3> waypoints = new List<Vector3>();
+        waypoints.Add(path[path.Count - 1].worldPosition);
+        return waypoints.ToArray();
     }
 
     int GetDistance(Node_nn nodeA, Node_nn nodeB)

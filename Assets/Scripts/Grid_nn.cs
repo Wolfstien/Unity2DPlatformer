@@ -23,6 +23,13 @@ public class Grid_nn : MonoBehaviour
         CreateGrid();
     }
 
+    private void Start() {
+        if (tilemap == null)
+        {
+            tilemap = GameObject.Find("Grid").transform.Find("Foreground").GetComponent<Tilemap>();
+        }
+    }
+
     void CreateGrid()
     {
         grid = new Node_nn[gridSizeX, gridSizeY];
@@ -116,8 +123,9 @@ public class Grid_nn : MonoBehaviour
         return grid[x, y];
     }
 
+    // below only for visual node representation and debugging
     public List<Node_nn> path;
-    public Vector3[] waypoints;
+    public Vector3[] waypoints; 
 
     void OnDrawGizmos()
     {
