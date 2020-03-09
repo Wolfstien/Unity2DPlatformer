@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float speed;
+    public GameObject XplosionFX;
     Rigidbody2D rigidBody2D;
     BoxCollider2D coll2D;
 
@@ -22,7 +23,7 @@ public class Bullet : MonoBehaviour
     }
 
     private void OnTriggerExit2D(Collider2D other) {
-        Debug.Log(other.gameObject.layer);
+        // Debug.Log(other.gameObject.layer);
         if (gameObject.layer == 16 && !TrapExitedGround)
         {
             TrapExitedGround = true;
@@ -46,6 +47,7 @@ public class Bullet : MonoBehaviour
         {
             Debug.Log("hit enemy");
             GameManager.instance.AddScore(1);
+            SpawnFX();
             Destroy(other.gameObject);  //TODO: create funct to deal damage and handel player/enemy health later
             Destroy(gameObject);
         }
@@ -53,5 +55,10 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    void SpawnFX()
+    {
+        Instantiate(XplosionFX, transform.position, transform.rotation);
     }
 }

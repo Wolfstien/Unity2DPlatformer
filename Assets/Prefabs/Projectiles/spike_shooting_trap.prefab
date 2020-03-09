@@ -147,6 +147,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  XplosionFX: {fileID: 7479500644772970942, guid: 14d6f64f0c7d34f4283b741d70bab37d,
+    type: 3}
+  TrapExitedGround: 0
 --- !u!61 &4998554619053917762
 BoxCollider2D:
   m_ObjectHideFlags: 0

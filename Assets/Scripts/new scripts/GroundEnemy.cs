@@ -38,7 +38,7 @@ public class GroundEnemy : MonoBehaviour
 
     void Flip()
     {
-        Debug.Log("flip");
+        // Debug.Log("flip");
         trans.Rotate(new Vector3(0, 180, 0));
     }
 
